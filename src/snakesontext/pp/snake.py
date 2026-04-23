@@ -1,13 +1,13 @@
-
+import keyboard
 import os
 import random
 import time
 
 # Game dimensions
-width = 10 #20
-height = 10 # 20
+BOARD_WIDTH = 10 #20
+BOARD_HEIGHT = 10 # 20
 # snake_block = 1
-snake_speed = 0.05  # Adjust this for speed
+SNAKE_SPEED = 0.05  # Adjust this for speed
 
 
 arrows =  "  w  \n"
@@ -15,7 +15,7 @@ arrows += "a s d\n"
 
 # Definition of the "board" border
 border = "#"
-top_frame_border = border * width * 2 + border
+top_frame_border = border * BOARD_WIDTH * 2 + border
 
 # Directions
 directions = {
@@ -26,11 +26,11 @@ directions = {
 }
 
 # Initial position and direction
-snake = [(width//2, height//2)]
+snake = [(BOARD_WIDTH//2, BOARD_HEIGHT//2)]
 direction = 'RIGHT'
 
 # Food
-food = (random.randint(0, width - 1), random.randint(0, height - 1))
+food = (random.randint(0, BOARD_WIDTH - 1), random.randint(0, BOARD_HEIGHT - 1))
 score = 0
 
 # Game over flag
@@ -53,7 +53,8 @@ def print_board():
     - Resets the screen and displays the board
     """
 
-    board = [[' ' for _ in range(width)] for _ in range(height)]
+    board = [[' ' for _ in range(BOARD_WIDTH
+)] for _ in range(BOARD_HEIGHT)]
 
     # Draw snake
     for x, y in snake:
@@ -87,7 +88,7 @@ def move():
     new_x, new_y = x + dx, y + dy
 
     # Check boundaries
-    if new_x < 0 or new_x >= width or new_y < 0 or new_y >= height:
+    if new_x < 0 or new_x >= BOARD_WIDTH or new_y < 0 or new_y >= BOARD_HEIGHT:
         game_over = True
         return
 
@@ -102,7 +103,7 @@ def move():
     # Check food collision
     if (new_x, new_y) == food:
         score += 1
-        food = (random.randint(0, width - 1), random.randint(0, height - 1))
+        food = (random.randint(0, BOARD_WIDTH - 1), random.randint(0, BOARD_HEIGHT - 1))
     else:
         # Remove tail
         snake.pop()
@@ -146,16 +147,16 @@ def run_game():
             break
 
         # Change directionw
-        if cmd == 'w' and direction != 'DOWN':
+        if keyboard.read_key() == 'w' and direction != 'DOWN':
             direction = 'UP'
-        elif cmd == 's' and direction != 'UP':
+        elif keyboard.read_key() == 's' and direction != 'UP':
             direction = 'DOWN'
-        elif cmd == 'a' and direction != 'RIGHT':
+        elif keyboard.read_key() == 'a' and direction != 'RIGHT':
             direction = 'LEFT'
-        elif cmd == 'd' and direction != 'LEFT':
+        elif keyboard.read_key() == 'd' and direction != 'LEFT':
             direction = 'RIGHT'
 
         move()
-        time.sleep(snake_speed)
+        time.sleep(SNAKE_SPEED)
 
     game_over_message()
