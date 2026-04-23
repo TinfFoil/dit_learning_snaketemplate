@@ -181,9 +181,20 @@ from oop.snake import SnakeOnText
 
 # The main function of a program is usually called "main".
 def main():
-    snake_pp.run_game()
-    my_snake = SnakeOnText()
-    my_snake.run_game()
-
+    # snake_pp.run_game()
+    
+    levels = {
+        0:4,
+        1:6,
+        2:8,
+        3:10
+    }
+    for i in range(5):
+        my_snake = SnakeOnText(board_width=levels[i], board_height=levels[i])
+        won = my_snake.run_game()
+        if won == False:
+            break
+    if won:
+        print("great job! You finished the game")
 # Start the game
 main()

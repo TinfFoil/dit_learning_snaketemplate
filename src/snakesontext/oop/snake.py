@@ -2,22 +2,15 @@ import os
 import random
 import time
 
+# Allows for capturing key strokes
 from readchar import readkey, key
 
 class SnakeOnText():
-    # Game dimensions
-    # BOARD_WIDTH = 10 #20
-    # BOARD_HEIGHT = 10 # 20
-    # snake_block = 1
-    # SNAKE_SPEED = 0.05  # Adjust this for speed
 
     ARROWS =  "  w  \n"
     ARROWS += "a s d\n"
 
-    # Definition of the "board" border
-    # BORDER = "#"
-
-        # Directions
+    # Directions
     DIRECTIONS = {
         'UP':    (0, -1),
         'DOWN':  (0,  1),
@@ -25,46 +18,41 @@ class SnakeOnText():
         'RIGHT': (1,  0)
     }
 
-
-    def __init__(self, board_widht=10, board_height = 10, snake_speed=0.05, initial_direction="RIGHT", border="#"):
-        # Game dimensions
-        self.board_width = board_widht
+    def __init__(self, board_width=10, board_height=10, snake_speed=0.01, initial_direction="RIGHT", border="#"):
+        # Board size
+        self.board_width = board_width
         self.board_height = board_height
+
         self.snake_speed = snake_speed
     
-        # Definition of the "board" border
+        # Board border
         self.border = border
         self.top_frame_border = border * self.board_width * 2 + border
 
-        # Initial position and direction
+        # Starting position and direction
         self.snake = [(self.board_width//2, self.board_height//2)]
         self.direction = initial_direction
 
         # Food
-        self.food = (random.randint(0, self.board_width - 1), random.randint(0, self.board_height - 1))
+        self.food = self._get_food_coordinates()
         self.score = 0
         
         # Game over flag
-        game_over = False
+        self.game_over = False
 
-    # def set_board_width(self, width):
-    #      self.board_width = width
+    def _get_food_coordinates(self):
+        tmp = (random.randint(0, self.board_width - 1), random.randint(0, self.board_height - 1))
+        if tmp in self.snake:
+            print("RECURSIVITY")
+            time.sleep(0.3)
+            tmp = self._get_food_coordinates()
 
-    # def set_board_height(self, height):
-    #     self.board_height = height
+        return tmp
     
     # def set_snake_speed(self, speed):
     #     self.snake_speed = speed
 
-    # def set_border_character(self, character):
-    #     if len(character) == 1:
-    #         self.border_character = character
-    #         # TODO this should be triggered when the board weight is changed too
-    #         self.top_frame_border = border * BOARD_WIDTH * 2 + border
-
-    #     else:
-    #         exit(-1)
-
+    @staticmethod
     def clear_screen():
         """Clears the contents from the screen to refresh the board
         after every interaction
@@ -82,20 +70,20 @@ class SnakeOnText():
         - Resets the screen and displays the board
         """
 
-        board = [[' ' for _ in range(self.board_widht)] for _ in range(self.board_height)]
+        board = [[' ' for _ in range(self.board_width)] for _ in range(self.board_height)]
 
         # Draw snake
         for x, y in self.snake:
             board[y][x] = 'S'
 
         # Draw food
-        board[food[1]][food[0]] = 'F' # '⏺'
+        board[self.food[1]][self.food[0]] = 'F' # '⏺'
 
         # Print the board
         self.clear_screen()
         print(self.top_frame_border)
         for row in board:
-            print(border + ' '.join(row) + border)
+            print(self.border + ' '.join(row) + self.border)
         print(self.top_frame_border)
 
         print(f"{self.ARROWS} Score: {self.score}")
@@ -105,9 +93,8 @@ class SnakeOnText():
         Determines the new position of the snake and alters
         it depending on the situation (i.e. moving and growing)
         """
-        # global snake, food, score, game_over
 
-        # TODO this function has a bug: when the direction is
+        # TODO this function has a bug: when the direction 
         # and the key are incompatible, it "bumps"
 
         # Move snake
@@ -116,7 +103,7 @@ class SnakeOnText():
         new_x, new_y = x + dx, y + dy
 
         # Check boundaries
-        if new_x < 0 or new_x >= self.board_widht or new_y < 0 or new_y >= self.board_height:
+        if new_x < 0 or new_x >= self.board_width or new_y < 0 or new_y >= self.board_height:
             self.game_over = True
             return
 
@@ -128,13 +115,17 @@ class SnakeOnText():
         # Add new head
         self.snake.insert(0, (new_x, new_y))
 
+        # TODO perhaps shift before collisions. Otherwise, the head might crash against 
+        # a leaving tail       
         # Check food collision
         if (new_x, new_y) == self.food:
             self.score += 1
-            self.food = (random.randint(0, self.board_widht - 1), random.randint(0, self.board_height - 1))
+            self.food = self._get_food_coordinates()
+            # (random.randint(0, self.board_width - 1), random.randint(0, self.board_height - 1))
         else:
             # Remove tail
             self.snake.pop()
+        
 
     def game_over_message(self):
         """Displays the game over message,
@@ -147,13 +138,6 @@ class SnakeOnText():
         print("*" * 18)
         
     def run_game(self):
-
-        # TODO Every time this is launched, the
-        # snake should be initialized
-        # global direction, game_over
-
-        # game_over = False
-
 
         print("Welcome to Snake in Text Mode!")
         print("Use 'w', 'a', 's', 'd' to control the snake")
@@ -176,15 +160,18 @@ class SnakeOnText():
 
             # Change directionw
             if cmd == 'w' and self.direction != 'DOWN':
-                direction = 'UP'
+                self.direction = 'UP'
             elif cmd == 's' and self.direction != 'UP':
-                direction = 'DOWN'
+                self.direction = 'DOWN'
             elif cmd == 'a' and self.direction != 'RIGHT':
-                direction = 'LEFT'
+                self.direction = 'LEFT'
             elif cmd == 'd' and self.direction != 'LEFT':
-                direction = 'RIGHT'
+                self.direction = 'RIGHT'
 
             self.move()
-            time.sleep(SNAKE_SPEED)
+            time.sleep(self.snake_speed)
+            if len(self.snake) == self.board_width * self.board_height - 1:
+                return True
 
         self.game_over_message()
+        return False
