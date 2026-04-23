@@ -1,177 +1,186 @@
 
-import os
-import random
-import time
-
-# from IPython.display import clear_output
-
-# Game dimensions
-width = 10 #20
-height = 10 # 20
-snake_block = 1
-snake_speed = 0.05  # Adjust this for speed
+# import os
+# import random
+# import time
 
 
-arrows =  "  w  \n"
-arrows += "a s d\n"
+from pp import snake 
 
-# Definition of the "board" border
-border = "#"
-top_frame_border = border * width * 2 + border
 
-# Directions
-directions = {
-    'UP':    (0, -1),
-    'DOWN':  (0,  1),
-    'LEFT':  (-1, 0),
-    'RIGHT': (1,  0)
-}
+# # Game dimensions
+# width = 10 #20
+# height = 10 # 20
+# snake_block = 1
+# snake_speed = 0.05  # Adjust this for speed
 
-# Initial position and direction
-snake = [(width//2, height//2)]
-direction = 'RIGHT'
 
-# Food
-food = (random.randint(0, width - 1), random.randint(0, height - 1))
-score = 0
+# arrows =  "  w  \n"
+# arrows += "a s d\n"
 
-# Game over flag
-game_over = False
+# # Definition of the "board" border
+# border = "#"
+# top_frame_border = border * width * 2 + border
 
-def clear_screen():
-  """Tries to erase all the contents from the screen.
-  """
+# # Directions
+# directions = {
+#     'UP':    (0, -1),
+#     'DOWN':  (0,  1),
+#     'LEFT':  (-1, 0),
+#     'RIGHT': (1,  0)
+# }
 
-  # This function is quite "fragile". Please, read the
-  # following comments for (potential) necessary changes
+# # Initial position and direction
+# snake = [(width//2, height//2)]
+# direction = 'RIGHT'
 
-  # This alternative applies if running on colab.
-#   clear_output()
+# # Food
+# food = (random.randint(0, width - 1), random.randint(0, height - 1))
+# score = 0
 
-  # This alternative applies if working on a terminal
-  # It needs to os to be imported
-  os.system('cls' if os.name == 'nt' else 'clear')
+# # Game over flag
+# game_over = False
 
-def print_board():
-  """
-  Function in charge of displaying the screen after
-  each interaction. It...
+# def clear_screen():
+#   """Tries to erase all the contents from the screen.
+#   """
 
-  - Sets up an empty board
-  - Adds the snake to the board
-  - Adds the food to the board
-  - Resets the screen and displays the board
-  """
+#   # This function is quite "fragile". Please, read the
+#   # following comments for (potential) necessary changes
 
-  # global border, top_frame_border
+#   # This alternative applies if running on colab.
+# #   clear_output()
 
-  board = [[' ' for _ in range(width)] for _ in range(height)]
+#   # This alternative applies if working on a terminal
+#   # It needs to os to be imported
+#   os.system('cls' if os.name == 'nt' else 'clear')
 
-  # Draw snake
-  for x, y in snake:
-      board[y][x] = 'S'
+# def print_board():
+#   """
+#   Function in charge of displaying the screen after
+#   each interaction. It...
 
-  # Draw food
-  board[food[1]][food[0]] = 'F' # '⏺'
+#   - Sets up an empty board
+#   - Adds the snake to the board
+#   - Adds the food to the board
+#   - Resets the screen and displays the board
+#   """
 
-  # Print the board
-  clear_screen()
-  print(top_frame_border)
-  for row in board:
-      print(border + ' '.join(row) + border)
-  print(top_frame_border)
+#   # global border, top_frame_border
 
-  print(f"{arrows} Score: {score}")
+#   board = [[' ' for _ in range(width)] for _ in range(height)]
 
-def move():
-  """
-  Determines the new position of the snake and alters
-  it depending on the situation (i.e. moving and growing)
-  """
-  global snake, food, score, game_over
+#   # Draw snake
+#   for x, y in snake:
+#       board[y][x] = 'S'
 
-  # TODO this function has a bug: when the direction is
-  # and the key are incompatible, it "bumps"
+#   # Draw food
+#   board[food[1]][food[0]] = 'F' # '⏺'
 
-  # Move snake
-  x, y = snake[0]
-  dx, dy = directions[direction]
-  new_x, new_y = x + dx, y + dy
+#   # Print the board
+#   clear_screen()
+#   print(top_frame_border)
+#   for row in board:
+#       print(border + ' '.join(row) + border)
+#   print(top_frame_border)
 
-  # Check boundaries
-  if new_x < 0 or new_x >= width or new_y < 0 or new_y >= height:
-      game_over = True
-      return
+#   print(f"{arrows} Score: {score}")
 
-  # Check self-collision
-  if (new_x, new_y) in snake:
-      game_over = True
-      return
+# def move():
+#   """
+#   Determines the new position of the snake and alters
+#   it depending on the situation (i.e. moving and growing)
+#   """
+#   global snake, food, score, game_over
 
-  # Add new head
-  snake.insert(0, (new_x, new_y))
+#   # TODO this function has a bug: when the direction is
+#   # and the key are incompatible, it "bumps"
 
-  # Check food collision
-  if (new_x, new_y) == food:
-      score += 1
-      food = (random.randint(0, width - 1), random.randint(0, height - 1))
-  else:
-      # Remove tail
-      snake.pop()
+#   # Move snake
+#   x, y = snake[0]
+#   dx, dy = directions[direction]
+#   new_x, new_y = x + dx, y + dy
 
-def game_over_message():
-  """Displays the game over message,
-  including the final score
-  """
-  clear_screen()
-  print("*" * 18)
-  print("*   Game Over!   *")
-  print(f"* Final Score: {score} *")
-  print("*" * 18)
+#   # Check boundaries
+#   if new_x < 0 or new_x >= width or new_y < 0 or new_y >= height:
+#       game_over = True
+#       return
+
+#   # Check self-collision
+#   if (new_x, new_y) in snake:
+#       game_over = True
+#       return
+
+#   # Add new head
+#   snake.insert(0, (new_x, new_y))
+
+#   # Check food collision
+#   if (new_x, new_y) == food:
+#       score += 1
+#       food = (random.randint(0, width - 1), random.randint(0, height - 1))
+#   else:
+#       # Remove tail
+#       snake.pop()
+
+# def game_over_message():
+#   """Displays the game over message,
+#   including the final score
+#   """
+#   clear_screen()
+#   print("*" * 18)
+#   print("*   Game Over!   *")
+#   print(f"* Final Score: {score} *")
+#   print("*" * 18)
+
+# # The main function of a program is usually called "main".
+# def main():
+
+#     # TODO Every time this is launched, the
+#     # snake should be initialized
+#     global direction, game_over
+
+#     game_over = False
+
+
+#     print("Welcome to Snake in Text Mode!")
+#     print("Use 'w', 'a', 's', 'd' to control the snake")
+#     print("Press 'q' to quit")
+
+#     print("\nLoading...")
+
+#     time.sleep(5)
+
+    # # while True:
+    # while game_over == False:
+    #     print_board()
+
+    #     # Get user input
+    #     cmd = input().strip().lower()
+
+    #     if cmd == 'q':
+    #         game_over = True # not really necessary, given the break
+    #         break
+
+    #     # Change directionw
+    #     if cmd == 'w' and direction != 'DOWN':
+    #         direction = 'UP'
+    #     elif cmd == 's' and direction != 'UP':
+    #         direction = 'DOWN'
+    #     elif cmd == 'a' and direction != 'RIGHT':
+    #         direction = 'LEFT'
+    #     elif cmd == 'd' and direction != 'LEFT':
+    #         direction = 'RIGHT'
+
+    #     move()
+    #     time.sleep(snake_speed)
+
+    # game_over_message()
+
+
+
 
 # The main function of a program is usually called "main".
 def main():
-
-    # TODO Every time this is launched, the
-    # snake should be initialized
-    global direction, game_over
-
-    game_over = False
-
-
-    print("Welcome to Snake in Text Mode!")
-    print("Use 'w', 'a', 's', 'd' to control the snake")
-    print("Press 'q' to quit")
-
-    print("\nLoading...")
-
-    time.sleep(5)
-
-    # while True:
-    while game_over == False:
-        print_board()
-
-        # Get user input
-        cmd = input().strip().lower()
-
-        if cmd == 'q':
-            game_over = True # not really necessary, given the break
-            break
-
-        # Change directionw
-        if cmd == 'w' and direction != 'DOWN':
-            direction = 'UP'
-        elif cmd == 's' and direction != 'UP':
-            direction = 'DOWN'
-        elif cmd == 'a' and direction != 'RIGHT':
-            direction = 'LEFT'
-        elif cmd == 'd' and direction != 'LEFT':
-            direction = 'RIGHT'
-
-        move()
-        time.sleep(snake_speed)
-
-    game_over_message()
+    snake.run_game()
 
 # Start the game
 main()
