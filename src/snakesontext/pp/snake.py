@@ -1,7 +1,8 @@
-import keyboard
 import os
 import random
 import time
+
+from readchar import readkey, key
 
 # Game dimensions
 BOARD_WIDTH = 10 #20
@@ -140,20 +141,20 @@ def run_game():
         print_board()
 
         # Get user input
-        cmd = input().strip().lower()
-
+        cmd = readkey()
+        
         if cmd == 'q':
             game_over = True # not really necessary, given the break
             break
 
         # Change directionw
-        if keyboard.read_key() == 'w' and direction != 'DOWN':
+        if cmd == 'w' and direction != 'DOWN':
             direction = 'UP'
-        elif keyboard.read_key() == 's' and direction != 'UP':
+        elif cmd == 's' and direction != 'UP':
             direction = 'DOWN'
-        elif keyboard.read_key() == 'a' and direction != 'RIGHT':
+        elif cmd == 'a' and direction != 'RIGHT':
             direction = 'LEFT'
-        elif keyboard.read_key() == 'd' and direction != 'LEFT':
+        elif cmd == 'd' and direction != 'LEFT':
             direction = 'RIGHT'
 
         move()

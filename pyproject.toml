@@ -1,12 +1,10 @@
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
 
 [project]
 name = "dit_learning_snaketemplate"
 version = "0.1"
 dependencies = [  
-  "keyboard>=0.13.5",
+  "readchar>=4.2.2",
+
 ]
 requires-python = ">=3.8"
 authors = [
@@ -41,11 +39,3 @@ Repository = "https://github.com/me/spam.git"
 "Bug Tracker" = "https://github.com/me/spam/issues"
 Changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
 
-[project.scripts]
-spam-cli = "spam:main_cli"
-
-[project.gui-scripts]
-spam-gui = "spam:main_gui"
-
-[project.entry-points."spam.magical"]
-tomatoes = "spam:main_tomatoes"
