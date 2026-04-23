@@ -4,7 +4,8 @@
 # import time
 
 
-from pp import snake 
+from pp import snake as snake_pp
+from oop.snake import SnakeOnText 
 
 
 # # Game dimensions
@@ -180,7 +181,9 @@ from pp import snake
 
 # The main function of a program is usually called "main".
 def main():
-    snake.run_game()
+    snake_pp.run_game()
+    my_snake = SnakeOnText()
+    my_snake.run_game()
 
 # Start the game
 main()
