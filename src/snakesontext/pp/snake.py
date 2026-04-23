@@ -3,12 +3,10 @@ import os
 import random
 import time
 
-# from IPython.display import clear_output
-
 # Game dimensions
 width = 10 #20
 height = 10 # 20
-snake_block = 1
+# snake_block = 1
 snake_speed = 0.05  # Adjust this for speed
 
 
@@ -39,95 +37,85 @@ score = 0
 game_over = False
 
 def clear_screen():
-  """Tries to erase all the contents from the screen.
-  """
-
-  # This function is quite "fragile". Please, read the
-  # following comments for (potential) necessary changes
-
-  # This alternative applies if running on colab.
-#   clear_output()
-
-  # This alternative applies if working on a terminal
-  # It needs to os to be imported
-  os.system('cls' if os.name == 'nt' else 'clear')
+    """Clears the contents from the screen to refresh the board
+    after every interaction
+    """
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def print_board():
-  """
-  Function in charge of displaying the screen after
-  each interaction. It...
+    """
+    Updates  the screen after each interaction with the user. 
+    It...
 
-  - Sets up an empty board
-  - Adds the snake to the board
-  - Adds the food to the board
-  - Resets the screen and displays the board
-  """
+    - Sets up an empty board
+    - Adds the snake to the board
+    - Adds the food to the board
+    - Resets the screen and displays the board
+    """
 
-  # global border, top_frame_border
+    board = [[' ' for _ in range(width)] for _ in range(height)]
 
-  board = [[' ' for _ in range(width)] for _ in range(height)]
+    # Draw snake
+    for x, y in snake:
+        board[y][x] = 'S'
 
-  # Draw snake
-  for x, y in snake:
-      board[y][x] = 'S'
+    # Draw food
+    board[food[1]][food[0]] = 'F' # '⏺'
 
-  # Draw food
-  board[food[1]][food[0]] = 'F' # '⏺'
+    # Print the board
+    clear_screen()
+    print(top_frame_border)
+    for row in board:
+        print(border + ' '.join(row) + border)
+    print(top_frame_border)
 
-  # Print the board
-  clear_screen()
-  print(top_frame_border)
-  for row in board:
-      print(border + ' '.join(row) + border)
-  print(top_frame_border)
-
-  print(f"{arrows} Score: {score}")
+    print(f"{arrows} Score: {score}")
 
 def move():
-  """
-  Determines the new position of the snake and alters
-  it depending on the situation (i.e. moving and growing)
-  """
-  global snake, food, score, game_over
+    """
+    Determines the new position of the snake and alters
+    it depending on the situation (i.e. moving and growing)
+    """
+    global snake, food, score, game_over
 
-  # TODO this function has a bug: when the direction is
-  # and the key are incompatible, it "bumps"
+    # TODO this function has a bug: when the direction is
+    # and the key are incompatible, it "bumps"
 
-  # Move snake
-  x, y = snake[0]
-  dx, dy = directions[direction]
-  new_x, new_y = x + dx, y + dy
+    # Move snake
+    x, y = snake[0]
+    dx, dy = directions[direction]
+    new_x, new_y = x + dx, y + dy
 
-  # Check boundaries
-  if new_x < 0 or new_x >= width or new_y < 0 or new_y >= height:
-      game_over = True
-      return
+    # Check boundaries
+    if new_x < 0 or new_x >= width or new_y < 0 or new_y >= height:
+        game_over = True
+        return
 
-  # Check self-collision
-  if (new_x, new_y) in snake:
-      game_over = True
-      return
+    # Check self-collision
+    if (new_x, new_y) in snake:
+        game_over = True
+        return
 
-  # Add new head
-  snake.insert(0, (new_x, new_y))
+    # Add new head
+    snake.insert(0, (new_x, new_y))
 
-  # Check food collision
-  if (new_x, new_y) == food:
-      score += 1
-      food = (random.randint(0, width - 1), random.randint(0, height - 1))
-  else:
-      # Remove tail
-      snake.pop()
+    # Check food collision
+    if (new_x, new_y) == food:
+        score += 1
+        food = (random.randint(0, width - 1), random.randint(0, height - 1))
+    else:
+        # Remove tail
+        snake.pop()
 
 def game_over_message():
-  """Displays the game over message,
-  including the final score
-  """
-  clear_screen()
-  print("*" * 18)
-  print("*   Game Over!   *")
-  print(f"* Final Score: {score} *")
-  print("*" * 18)
+    """Displays the game over message,
+    including the final score
+    """
+    clear_screen()
+    print("*" * 18)
+    print("*   Game Over!   *")
+    print(f"* Final Score: {score} *")
+    print("*" * 18)
     
 def run_game():
 
